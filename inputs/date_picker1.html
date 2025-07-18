@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Worst Date Picker Ever</title>
+  <style>
+    body {
+      background: repeating-linear-gradient(45deg, red, yellow 10px, lime 20px, cyan 30px);
+      font-family: "Comic Sans MS", cursive;
+      color: magenta;
+      text-align: center;
+      padding: 50px;
+      animation: spinBG 5s infinite linear;
+    }
+
+    @keyframes spinBG {
+      0% { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
+
+    button {
+      font-size: 20px;
+      padding: 10px;
+      margin: 10px;
+      border: 5px double fuchsia;
+      background: linear-gradient(to right, lime, magenta);
+      color: black;
+      box-shadow: 0 0 20px red;
+      cursor: crosshair;
+    }
+
+    #slotDisplay {
+      font-size: 60px;
+      width: 100px;
+      height: 100px;
+      line-height: 100px;
+      background-color: yellow;
+      border: 5px inset blue;
+      margin: 10px auto;
+      color: red;
+      font-weight: bold;
+      transform: rotate(-10deg);
+    }
+
+    #yearDisplay {
+      font-size: 32px;
+      background: black;
+      color: cyan;
+      padding: 10px;
+      display: inline-block;
+      border: 3px solid white;
+    }
+
+    #monthContainer {
+      position: relative;
+      width: 500px;
+      height: 300px;
+      margin: 30px auto;
+      border: 10px dashed orange;
+      overflow: hidden;
+      background: repeating-conic-gradient(from 0deg, purple, blue 20deg, green 40deg);
+    }
+
+    .month-cell {
+      position: absolute;
+      width: 100px;
+      height: 40px;
+      background-color: cyan;
+      color: black;
+      border: 2px solid white;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 40px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.1s;
+      font-size: 16px;
+    }
+
+    .trapped {
+      background-color: gray !important;
+      cursor: grab !important;
+    }
+
+    #selectedMonth, #selectedValues {
+      font-size: 24px;
+      margin-top: 20px;
+      background-color: black;
+      color: lime;
+      padding: 10px;
+      border: 2px dashed magenta;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>😵 Ultimate Date Picker From Hell</h1>
+
+  <!-- Slot Machine Day -->
+  <div>
+    <h2>Pick a Day (Slot Machine)</h2>
+    <div id="slotDisplay">??</div>
+    <button onclick="startSpin()">Spin</button>
+    <button onclick="stopSpin()">Stop</button>
+  </div>
+
+  <!-- Year Picker -->
+  <div>
+    <h2>Pick a Year (One at a Time)</h2>
+    <div id="yearDisplay">Year: 3000</div>
+    <button onclick="nextYear()">Next Year</button>
+  </div>
+
+  <!-- Month Game -->
+  <h2>Catch a Month (They’ll Run)</h2>
+  <div id="monthContainer"></div>
+  <div id="selectedMonth">No month selected 😤</div>
+
+  <!-- Submit -->
+  <div id="selectedValues">No date selected yet ❌</div>
+  <button onclick="submitDate()">Submit Your Sad Date</button>
+
+  <script>
+    // Slot machine logic
+    let spinInterval = null;
+    let currentDay = null;
+    function startSpin() {
+      clearInterval(spinInterval);
+      spinInterval = setInterval(() => {
+        currentDay = Math.floor(Math.random() * 31) + 1;
+        document.getElementById('slotDisplay').innerText = currentDay;
+      }, 75);
+    }
+
+    function stopSpin() {
+      if (!spinInterval) return;
+      clearInterval(spinInterval);
+      spinInterval = null;
+      updateDisplay();
+    }
+
+    // Year picker logic
+    let currentYear = 3000;
+    function nextYear() {
+      currentYear--;
+      if (currentYear < 1000) currentYear = 3000; // Wrap!
+      document.getElementById('yearDisplay').innerText = `Year: ${currentYear}`;
+      updateDisplay();
+    }
+
+    // Month madness
+    const months = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    const container = document.getElementById('monthContainer');
+    const containerBounds = { width: 500, height: 300 };
+    const cellSize = { width: 100, height: 40 };
+    let chosenMonth = null;
+
+    months.forEach((month) => {
+      const div = document.createElement('div');
+      div.classList.add('month-cell');
+      div.innerText = month;
+      div.style.left = Math.random() * (containerBounds.width - cellSize.width) + 'px';
+      div.style.top = Math.random() * (containerBounds.height - cellSize.height) + 'px';
+
+      let isTrapped = false;
+
+      div.addEventListener('mouseenter', () => {
+        if (isTrapped) return;
+
+        const currentLeft = parseFloat(div.style.left);
+        const currentTop = parseFloat(div.style.top);
+
+        const dx = (Math.random() > 0.5 ? 1 : -1) * 60;
+        const dy = (Math.random() > 0.5 ? 1 : -1) * 60;
+
+        let newLeft = currentLeft + dx;
+        let newTop = currentTop + dy;
+
+        const hitLeft = newLeft < 0;
+        const hitRight = newLeft > containerBounds.width - cellSize.width;
+        const hitTop = newTop < 0;
+        const hitBottom = newTop > containerBounds.height - cellSize.height;
+
+        if (hitLeft || hitRight || hitTop || hitBottom) {
+          div.classList.add('trapped');
+          isTrapped = true;
+          return;
+        }
+
+        div.style.left = newLeft + 'px';
+        div.style.top = newTop + 'px';
+      });
+
+      div.addEventListener('click', () => {
+        if (!isTrapped) {
+          alert("You haven’t trapped the month yet!");
+          return;
+        }
+        chosenMonth = month;
+        document.getElementById('selectedMonth').innerText = `Month captured: ${month}`;
+        div.style.backgroundColor = 'lime';
+        div.style.color = 'black';
+        updateDisplay();
+      });
+
+      container.appendChild(div);
+    });
+
+    function updateDisplay() {
+      const text = `Selected: ${currentDay || '??'} / ${chosenMonth || '??'} / ${currentYear}`;
+      document.getElementById('selectedValues').innerText = text;
+    }
+
+    function submitDate() {
+      if (!currentDay || !chosenMonth) {
+        alert("You haven't completed the ritual yet! Spin + Trap + Click!");
+        return;
+      }
+      alert(`😵 You submitted: ${currentDay} / ${chosenMonth} / ${currentYear}\nYou're braver than most.`);
+    }
+  </script>
+
+</body>
+</html>

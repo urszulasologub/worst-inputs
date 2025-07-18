@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>🔥 Welcome to the Hall of Selector Shame 🔥</title>
+  <style>
+    body {
+      background: url("https://www.fillmurray.com/300/300") repeat;
+      font-family: "Papyrus", cursive;
+      color: hotpink;
+      text-align: center;
+      animation: blinkbg 1s infinite alternate;
+    }
+
+    @keyframes blinkbg {
+      from { background-color: lime; }
+      to { background-color: orange; }
+    }
+
+    h1 {
+      font-size: 50px;
+      text-shadow: 2px 2px red, -2px -2px yellow;
+      margin-top: 30px;
+      animation: shake 0.5s infinite;
+    }
+
+    @keyframes shake {
+      0% { transform: rotate(0deg); }
+      25% { transform: rotate(1deg); }
+      50% { transform: rotate(-1deg); }
+      75% { transform: rotate(1deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    ul {
+      list-style-type: square;
+      background-color: black;
+      padding: 30px;
+      border: 10px groove cyan;
+      display: inline-block;
+      text-align: left;
+    }
+
+    li {
+      font-size: 24px;
+      padding: 10px;
+      background: linear-gradient(45deg, magenta, yellow);
+      margin-bottom: 10px;
+      border: 3px dotted lime;
+      transform: skewX(-10deg);
+    }
+
+    a {
+      color: red;
+      text-decoration: none;
+      font-weight: bold;
+      font-style: italic;
+      font-family: Impact, fantasy;
+    }
+
+    a:hover {
+      background-color: blue;
+      color: white;
+      text-decoration: underline wavy yellow;
+    }
+
+    marquee {
+      font-size: 30px;
+      color: gold;
+      background: purple;
+      padding: 5px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>😵 Horrible Input Selector Showcase</h1>
+
+  <marquee scrollamount="15" behavior="alternate">Welcome to the worst UI on Earth 🎉</marquee>
+
+  <ul>
+    <li><a href="inputs/date_picker1.html">🎰 Slot Month Corner Date Picker</a></li>
+    <!-- Future abominations go here -->
+    <!-- Example:
+    <li><a href="inputs/time_selector2.html">⏰ Melting Clock Time Chooser</a></li>
+    <li><a href="inputs/color_picker_disaster.html">🌈 Rainbow Blink Color Picker</a></li>
+    -->
+  </ul>
+
+  <p style="font-size: 18px; background: red; color: yellow; padding: 10px; border: 4px dashed black;">
+    More selectors will appear soon... if you dare return. 😈
+  </p>
+
+</body>
+</html>

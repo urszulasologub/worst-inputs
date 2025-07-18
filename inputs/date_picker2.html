@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Deceptive Date Picker 3.3</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f4f8;
+      padding: 50px;
+      color: #333;
+    }
+
+    .date-picker {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 30px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: 500;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      appearance: none;
+    }
+
+    button {
+      margin-top: 30px;
+      width: 100%;
+      padding: 14px;
+      font-size: 18px;
+      border: none;
+      background-color: #28a745;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    .fake-submit-link {
+      display: block;
+      margin-top: 10px;
+      text-align: right;
+      font-size: 14px;
+    }
+
+    .fake-submit-link a {
+      color: #007bff;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    #output {
+      margin-top: 40px;
+      font-weight: 600;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="date-picker">
+    <h2>Select Your Date</h2>
+
+    <label for="day">Day</label>
+    <select id="day"></select>
+
+    <label for="month">Month</label>
+    <select id="month"></select>
+
+    <label for="year">Year</label>
+    <select id="year"></select>
+
+    <!-- Real Clear Button -->
+    <button onclick="clearEverything()">Clear all</button>
+
+    <!-- Real Submit Link -->
+    <div class="fake-submit-link">
+      <a onclick="submitDate()">Submit</a>
+    </div>
+  </div>
+
+  <p id="output"></p>
+
+  <script>
+    const daySelect = document.getElementById('day');
+    const monthSelect = document.getElementById('month');
+    const yearSelect = document.getElementById('year');
+    const output = document.getElementById('output');
+
+    const days = Array.from({ length: 31 }, (_, i) => i + 1);
+    const months = [
+      { label: 'January', value: '01' },
+      { label: 'February', value: '02' },
+      { label: 'March', value: '03' },
+      { label: 'April', value: '04' },
+      { label: 'May', value: '05' },
+      { label: 'June', value: '06' },
+      { label: 'July', value: '07' },
+      { label: 'August', value: '08' },
+      { label: 'September', value: '09' },
+      { label: 'October', value: '10' },
+      { label: 'November', value: '11' },
+      { label: 'December', value: '12' }
+    ];
+    const years = Array.from({ length: 36 }, (_, i) => 1990 + i); // 1990–2025
+    const currentYear = new Date().getFullYear();
+
+    function shuffleArray(arr) {
+      return [...arr].sort(() => Math.random() - 0.5);
+    }
+
+    function renderDays(selectedValue = '1') {
+      const shuffled = shuffleArray(days);
+      daySelect.innerHTML = '';
+      shuffled.forEach(d => {
+        const option = document.createElement('option');
+        option.value = d;
+        option.textContent = d;
+        daySelect.appendChild(option);
+      });
+      daySelect.value = selectedValue;
+    }
+
+    function renderMonths(selectedValue = '01') {
+      const shuffled = shuffleArray(months);
+      monthSelect.innerHTML = '';
+      shuffled.forEach(m => {
+        const option = document.createElement('option');
+        option.value = m.value;
+        option.textContent = m.label;
+        monthSelect.appendChild(option);
+      });
+      monthSelect.value = selectedValue;
+    }
+
+    function renderYears(selectedValue = currentYear) {
+      const shuffled = shuffleArray(years);
+      yearSelect.innerHTML = '';
+      shuffled.forEach(y => {
+        const option = document.createElement('option');
+        option.value = y;
+        option.textContent = y;
+        yearSelect.appendChild(option);
+      });
+      if (years.includes(selectedValue)) {
+        yearSelect.value = selectedValue;
+      } else {
+        yearSelect.selectedIndex = 0;
+      }
+    }
+
+    function fullReshuffle() {
+      renderDays(daySelect.value);
+      renderMonths(monthSelect.value);
+      renderYears(parseInt(yearSelect.value));
+    }
+
+    function clearEverything() {
+      renderDays('1');
+      renderMonths('01');
+      renderYears(currentYear);
+      output.textContent = "Form cleared.";
+    }
+
+    function submitDate() {
+      const day = daySelect.value;
+      const monthText = monthSelect.options[monthSelect.selectedIndex]?.text;
+      const monthVal = monthSelect.value;
+      const year = yearSelect.value;
+
+      output.textContent =
+        `You submitted: ${day} / ${monthText} / ${year}`;
+    }
+
+    // Initial render
+    clearEverything();
+
+    // Trigger reshuffle on any change
+    [daySelect, monthSelect, yearSelect].forEach(select => {
+      select.addEventListener('change', () => {
+        fullReshuffle();
+      });
+    });
+  </script>
+
+</body>
+</html>
